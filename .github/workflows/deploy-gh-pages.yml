@@ -16,6 +16,8 @@ jobs:
       TZ: America/Vancouver
 
     steps:
+      - run: echo "GITHUB_WORKSPACE is $GITHUB_WORKSPACE"
+
       - run: |
           echo "Free space before:"
           set -x
