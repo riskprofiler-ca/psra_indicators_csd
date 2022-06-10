@@ -65,7 +65,7 @@ jobs:
           tileset="$(basename *.tar.xz.00 .tar.xz.00)"
           cat *.tar.xz.?? > "$tileset.tar.xz"
           ls -l *.tar.xz
-          time eatmydata tar xf "$tileset.tar.xz"
+          time eatmydata tar xf "$tileset.tar.xz" psra_indicators_csd/EPSG_900913
           ls -l "$tileset.tar.xz"
           mv "$tileset" public
           ls -l public
