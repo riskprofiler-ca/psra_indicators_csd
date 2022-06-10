@@ -16,8 +16,6 @@ jobs:
       TZ: America/Vancouver
 
     steps:
-      - run: echo "GITHUB_WORKSPACE is $GITHUB_WORKSPACE"
-
       - run: |
           echo "Free space before:"
           set -x
@@ -30,7 +28,6 @@ jobs:
       - name: Maximize build space and inodes
         uses: OpenDRR/maximize-build-space@many-inodes
         with:
-          build-mount-path: /home/runner
           root-reserve-mb: 512
           swap-size-mb: 100
           remove-dotnet: true
@@ -46,8 +43,10 @@ jobs:
           df -h .
           df -i .
 
-      - name: Checkout 
+      - name: Checkout vector tileset
         uses: actions/checkout@v3
+        with:
+          path: tileset
 
       - name: Make more room by deleting unused software
         if: ${{ github.event_name != 'schedule' }}
@@ -65,20 +64,23 @@ jobs:
         run: |
           set -x
           ls -l
+          cd tileset
+          ls -l
           tileset="$(basename *.tar.xz.00 .tar.xz.00)"
           cat *.tar.xz.?? > "$tileset.tar.xz"
           ls -l *.tar.xz
-          time eatmydata tar xf "$tileset.tar.xz" psra_indicators_csd/EPSG_900913
+          time eatmydata tar xf "$tileset.tar.xz" "$tileset/EPSG_4326/14/" "$tileset/EPSG_900913/14/"
           ls -l "$tileset.tar.xz"
           mv "$tileset" public
+          touch 404.html
           ls -l public
           du -csh public
           df -h .
           df -i .
 
       - name: Deploy to gh-pages branch as GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: OpenDRR/actions-gh-pages@v3-spacesaver
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./tileset/public
           force_orphan: true
