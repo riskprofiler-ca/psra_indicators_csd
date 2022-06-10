@@ -16,8 +16,32 @@ jobs:
       TZ: America/Vancouver
 
     steps:
-      - name: Increase number of inodes in the filesystem
+      - run: |
+          echo "Free space before:"
+          set -x
+          pwd
+          df -h
+          df -i
+          df -h .
+          df -i .
+
+      - name: Maximize build space and inodes
         uses: OpenDRR/maximize-build-space@many-inodes
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 100
+          remove-dotnet: true
+          remove-android: true
+          remove-haskell: true
+
+      - run: |
+          echo "Free space after:"
+          set -x
+          pwd
+          df -h
+          df -i
+          df -h .
+          df -i .
 
       - name: Checkout 
         uses: actions/checkout@v3
