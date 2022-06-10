@@ -28,6 +28,7 @@ jobs:
       - name: Maximize build space and inodes
         uses: OpenDRR/maximize-build-space@many-inodes
         with:
+          build-mount-path: /home/runner
           root-reserve-mb: 512
           swap-size-mb: 100
           remove-dotnet: true
@@ -70,6 +71,8 @@ jobs:
           mv "$tileset" public
           ls -l public
           du -csh public
+          df -h .
+          df -i .
 
       - name: Deploy to gh-pages branch as GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
